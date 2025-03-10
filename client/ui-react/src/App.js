@@ -1,11 +1,16 @@
 import './App.css';
-import FormsList from './Components/FormsList'
+import {useState,useEffect} from 'react';
+const tg = window.Telegram.WebApp;
 function App() {
+  useEffect(() => {
+    tg.ready();
+  }, []);
+  const onClose = () => {
+    tg.close()
+  };
   return (
     <div className="App">
-      <div className="container">
-        <FormsList/>
-      </div>
+      <button onClick={onClose}>Закрыть</button>
     </div>
   );
 }
