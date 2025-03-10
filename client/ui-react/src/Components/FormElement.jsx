@@ -16,6 +16,8 @@ function FormElement({id,title,status}) {
       className += ' inprogress';
       statusTitle = 'В процессе';
       break;
+    default:
+      break;
   }
   return (
     <div className={className}>
