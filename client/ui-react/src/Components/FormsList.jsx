@@ -3,7 +3,7 @@ import './FormsList.css'
 import FormElement from './FormElement'
 function FormsList({items}) {
   return (
-    <ul>
+    <div className='container'>
       {items.map((item) => (
         <FormElement
           key={item.id}
@@ -12,7 +12,7 @@ function FormsList({items}) {
           status={item.status}
         />
       ))}
-    </ul>
+    </div>
   )
 }
 

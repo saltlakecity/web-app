@@ -1,0 +1,28 @@
+.form-element {
+    align-self:center;
+    width:90%;
+    display:flex;
+    margin-top:35px;
+    border-radius:15px;
+    border:3px solid black;
+    padding: 15px;
+    cursor:pointer;
+}
+.form-element p {
+    margin-left:10px;
+}
+.form-element.active {
+    border-color: red;
+    box-shadow: 0 0 5px red,
+    inset 0 0 5px red;
+}
+.form-element.solved {
+    border-color: green;
+    box-shadow: 0 0 5px green,
+    inset 0 0 5px green;
+}
+.form-element.inprogress {
+    border-color: orange;
+    box-shadow: 0 0 5px orange,
+    inset 0 0 5px orange;
+}
