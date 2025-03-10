@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/saltlakecity/web-app.git/static/css/main.292f0f71.css",
+    "main.js": "/saltlakecity/web-app.git/static/js/main.020febc9.js",
+    "index.html": "/saltlakecity/web-app.git/index.html",
+    "main.292f0f71.css.map": "/saltlakecity/web-app.git/static/css/main.292f0f71.css.map",
+    "main.020febc9.js.map": "/saltlakecity/web-app.git/static/js/main.020febc9.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.292f0f71.css",
+    "static/js/main.020febc9.js"
+  ]
+}
