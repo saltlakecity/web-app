@@ -1,5 +1,5 @@
 import './App.css';
-import {useState,useEffect} from 'react';
+import {useEffect} from 'react';
 const tg = window.Telegram.WebApp;
 function App() {
   useEffect(() => {
