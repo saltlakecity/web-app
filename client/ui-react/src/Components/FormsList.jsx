@@ -1,10 +1,18 @@
 import React from 'react'
 import './FormsList.css'
-function FormsList() {
+import FormElement from './FormElement'
+function FormsList({items}) {
   return (
-    <div>
-      <div className="classname"></div>
-    </div>
+    <ul>
+      {items.map((item) => (
+        <FormElement
+          key={item.id}
+          id={item.id}
+          title={item.title}
+          status={item.status}
+        />
+      ))}
+    </ul>
   )
 }
 
