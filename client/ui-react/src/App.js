@@ -20,7 +20,9 @@ function App() {
   return (
     <div className="App">
       <button onClick={onClose}>Закрыть</button>
-      <h1 className='MainTitle'>СтудФормы</h1>
+      <div className='MainTitle-container'>
+        <h1 className='MainTitle'>СтудФормы</h1>
+      </div>
       <FormsList items={myData}/>
     </div>
   );

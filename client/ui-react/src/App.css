@@ -13,7 +13,13 @@
 body {
     background-color: #333333;
     color:#FFFFFF;
+    background: linear-gradient(to right, #d53369, #cbad6d);
+}
+.MainTitle-container {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
 }
 .MainTitle {
-    
+    align-self:center;
 }
