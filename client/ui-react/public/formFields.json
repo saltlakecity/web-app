@@ -1,0 +1,22 @@
+{
+    "1": [
+      { "name": "name", "label": "Ваше имя", "type": "text" },
+      { "name": "feedback", "label": "Ваш отзыв", "type": "textarea" }
+    ],
+    "2": [
+      { "name": "ideas", "label": "Предложения", "type": "textarea" },
+      { "name": "priority", "label": "Приоритет", "type": "select", "options": ["Высокий", "Средний", "Низкий"] }
+    ],
+    "3": [
+        { "name": "skills", "label": "Навыки", "type": "text" },
+        { "name": "time", "label": "Количество времени", "type": "number" }
+    ],
+    "4":[
+      { "name": "participants", "label": "Количество", "type": "number" },
+      { "name": "date", "label": "Дата", "type": "date" }
+    ],
+    "5":[
+      { "name": "candidates", "label": "Кандидаты", "type": "text" },
+      { "name": "places", "label": "Количество мест", "type": "number" }
+    ]
+}

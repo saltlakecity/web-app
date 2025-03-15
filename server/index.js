@@ -12,6 +12,7 @@ app.use(express.json())
 app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
 });
+
 const start = async () => {
     try {
         app.listen(PORT, () => console.log(`server started on port ${PORT}`))
