@@ -16,22 +16,21 @@ function App() {
     tg.ready();
     const loadData = async () => {
       try {
-        // Загружаем список форм из forms.json
+        
         const formsResponse = await fetch('/forms.json');
         const formsData = await formsResponse.json();
         setForms(formsData);
 
-        // Загружаем поля форм из formFields.json
+        
         const formFieldsResponse = await fetch('/formFields.json');
         const formFieldsData = await formFieldsResponse.json();
         setFormFields(formFieldsData);
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
-        // Обработка ошибок загрузки (например, отображение сообщения об ошибке)
+        
       }
     };
 
-    // Вызываем функцию загрузки данных
     loadData();
   }, []);
   const onClose = () => {

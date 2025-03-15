@@ -1,6 +1,6 @@
 {
     "1": [
-      { "name": "name", "label": "Ваше имя", "type": "text" },
+      { "name": "name", "label": "Ваше имя", "type": "textarea" },
       { "name": "feedback", "label": "Ваш отзыв", "type": "textarea" }
     ],
     "2": [
@@ -8,7 +8,7 @@
       { "name": "priority", "label": "Приоритет", "type": "select", "options": ["Высокий", "Средний", "Низкий"] }
     ],
     "3": [
-        { "name": "skills", "label": "Навыки", "type": "text" },
+        { "name": "skills", "label": "Навыки", "type": "textarea" },
         { "name": "time", "label": "Количество времени", "type": "number" }
     ],
     "4":[
