@@ -1,6 +1,6 @@
 import React from 'react'
 import "./FormElement.css"
-function FormElement({id,title,status}) {
+function FormElement({id,title,status,onClick}) {
   let className = 'form-element'
   let statusTitle
   switch (status) {
@@ -20,7 +20,7 @@ function FormElement({id,title,status}) {
       break;
   }
   return (
-    <div className={className}>
+    <div className={className} onClick={onClick}>
       <p className='id'>{id}.</p>
       <p className='title'>{title}</p>
       <p className='status'>{statusTitle}</p>

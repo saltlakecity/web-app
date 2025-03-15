@@ -1,6 +1,7 @@
 import './App.css';
-import {useEffect} from 'react';
+import {useState,useEffect} from 'react';
 import FormsList from './Components/FormsList';
+import FormView from './Components/FormView'
 const tg = window.Telegram.WebApp;
 function App() {
   const myData = [
@@ -17,13 +18,27 @@ function App() {
   const onClose = () => {
     tg.close()
   };
+
+  const [selectedForm, setSelectedForm] = useState(null);
+  const handleFormClick = (formId) => {
+    const form = myData.find((item) => item.id === formId);
+    setSelectedForm(form);
+  };
+  const handleBackClick = () => {
+    setSelectedForm(null);
+  };
+
   return (
     <div className="App">
       <button onClick={onClose}>Закрыть</button>
       <div className='MainTitle-container'>
         <h1 className='MainTitle'>СтудФормы</h1>
       </div>
-      <FormsList items={myData}/>
+      {selectedForm ? (
+        <FormView form={selectedForm} onBackClick={handleBackClick} />
+      ) : (
+        <FormsList items={myData} onFormClick={handleFormClick} />
+      )}
     </div>
   );
 }

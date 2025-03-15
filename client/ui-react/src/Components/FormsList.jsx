@@ -1,7 +1,7 @@
 import React from 'react'
 import './FormsList.css'
 import FormElement from './FormElement'
-function FormsList({items}) {
+function FormsList({items,onFormClick}) {
   return (
     <div className='container'>
       {items.map((item) => (
@@ -10,6 +10,7 @@ function FormsList({items}) {
           id={item.id}
           title={item.title}
           status={item.status}
+          onClick={() => onFormClick(item.id)}
         />
       ))}
     </div>
