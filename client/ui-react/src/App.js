@@ -49,8 +49,17 @@ function App() {
     const form = forms.find((item) => item.id === formId);
     setSelectedForm(form);
   };
-
-  // Объявляем состояние для хранения полей формы
+  // для обновления статуса формы
+  const updateFormStatus = (formId, newStatus) => {
+    const updatedForms = forms.map(form => {
+      if (form.id === formId) {
+        return { ...form, status: newStatus };
+      }
+      return form;
+    });
+    // состояние forms новым массивом
+    setForms(updatedForms);
+  };
   const [formFields, setFormFields] = useState({});
   return (
     <div className="App">
@@ -59,7 +68,7 @@ function App() {
         <h1 className='MainTitle'>СтудФормы</h1>
       </div>
       {selectedForm ? (
-        <FormView form={selectedForm} onBackClick={handleBackClick} fields={formFields[selectedForm.id]}/>
+        <FormView form={selectedForm} onBackClick={handleBackClick} fields={formFields[selectedForm.id]} updateFormStatus={updateFormStatus} setSelectedForm={setSelectedForm}/>
       ) : (
         <FormsList items={forms} onFormClick={handleFormClick} />
       )}
