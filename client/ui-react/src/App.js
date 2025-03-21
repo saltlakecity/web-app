@@ -4,48 +4,59 @@ import FormsList from './Components/FormsList';
 import FormView from './Components/FormView';
 import queryString from 'query-string';
 const tg = window.Telegram.WebApp;
-const backendUrl = process.env.REACT_APP_BACKEND_URL;
 function App() {
   useEffect(() => {
-    tg.ready();
+          // Проверка инициализации Telegram WebApp
+          if (window.Telegram && window.Telegram.WebApp) {
+              tg.ready();
+              const parsedQuery = queryString.parse(window.location.search);
+              const userIdFromUrl = parsedQuery.user_id;
+              setUserId(userIdFromUrl);
+              const loadData = async () => {
+                  try {
+                      const formsResponse = await fetch('/forms.json'); // Проверьте путь!
+                      if (!formsResponse.ok) {
+                          throw new Error(`Ошибка загрузки forms.json: ${formsResponse.status}`);
+                      }
+                      const formsData = await formsResponse.json();
+                      setForms(formsData);
+                      const formFieldsResponse = await fetch('/formFields.json'); // Проверьте путь!
+                      if (!formFieldsResponse.ok) {
+                          throw new Error(`Ошибка загрузки formFields.json: ${formFieldsResponse.status}`);
+                      }
+                      const formFieldsData = await formFieldsResponse.json();
+                      setFormFields(formFieldsData);
+                      if (userIdFromUrl) {
+                          const backendUrl = process.env.REACT_APP_BACKEND_URL; // Получаем URL здесь, чтобы быть уверенными, что он доступен
+                          if (!backendUrl) {
+                              throw new Error('REACT_APP_BACKEND_URL не определен!');
+                          }
+                          const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
+                          if (!statusesResponse.ok) {
+                              throw new Error(`Ошибка загрузки статусов: ${statusesResponse.status}`);
+                          }
+                          const statusesData = await statusesResponse.json();
+                          setUserStatuses(statusesData);
+                          console.log('Статусы пользователя загружены:', statusesData);
+                      }
+                  } catch (error) {
+                      console.error('Ошибка загрузки данных:', error);
+                  }
+              };
+  
+              loadData();
+          } else {
+              console.error('Telegram WebApp не инициализирован!');
+          }
+      }, []); // Важно: пустой массив зависимостей!
 
-    const parsedQuery = queryString.parse(window.location.search);
-    const userIdFromUrl = parsedQuery.user_id;
-    setUserId(userIdFromUrl); //  Устанавливаем ID пользователя
-
-    const loadData = async () => {
-      try {
-        
-        const formsResponse = await fetch('/forms.json');
-        const formsData = await formsResponse.json();
-        setForms(formsData);
-
-        
-        const formFieldsResponse = await fetch('/formFields.json');
-        const formFieldsData = await formFieldsResponse.json();
-        setFormFields(formFieldsData);
-
-
-        if (userIdFromUrl) {
-          const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
-          const statusesData = await statusesResponse.json();
-          setUserStatuses(statusesData);
-          console.log('Статусы пользователя загружены:', statusesData);
-      }
-
-
-      } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-        
-      }
+      const onClose = () => {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.close();
+        } else {
+            console.warn('Telegram WebApp не инициализирован, закрытие невозможно.');
+        }
     };
-
-    loadData();
-  }, []);
-
-  const onClose = () => {
-    tg.close()
-  };
   const handleBackClick = () => {
     setSelectedForm(null);
   };
@@ -66,33 +77,39 @@ function App() {
   // для обновления статуса формы
   const updateFormStatus = async (formId, newStatus) => {
     try {
-      await fetch(`/api/user-statuses/${userId}`, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ formId: formId, status: newStatus }),
-      });
+        const backendUrl = process.env.REACT_APP_BACKEND_URL; // Получаем URL здесь, чтобы быть уверенными, что он доступен
+        if (!backendUrl) {
+            throw new Error('REACT_APP_BACKEND_URL не определен!');
+        }
+        const response = await fetch(`${backendUrl}/api/user-statuses/${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ formId: formId, status: newStatus }),
+        });
+        if (!response.ok) {
+            throw new Error(`Ошибка обновления статуса: ${response.status}`);
+        }
 
-      //  Обновляем состояние на фронтенде
-      setUserStatuses({
-          ...userStatuses,
-          [formId]: newStatus,
-      });
+        setUserStatuses({
+            ...userStatuses,
+            [formId]: newStatus,
+        });
 
-      //  Обновляем статус в списке форм (необязательно, если хотите отображать актуальный статус в списке)
-      const updatedForms = forms.map((form) => {
-          if (form.id === formId) {
-              return { ...form, status: newStatus };
-          }
-          return form;
-      });
-      setForms(updatedForms);
-      console.log(`Статус формы ${formId} обновлен на ${newStatus}`);
-  } catch (error) {
-      console.error('Ошибка обновления статуса:', error);
-  }
-  };
+        const updatedForms = forms.map((form) => {
+            if (form.id === formId) {
+                return { ...form, status: newStatus };
+            }
+            return form;
+        });
+        setForms(updatedForms);
+
+        console.log(`Статус формы ${formId} обновлен на ${newStatus}`);
+    } catch (error) {
+        console.error('Ошибка обновления статуса:', error);
+    }
+};
 
 
   return (
