@@ -6,13 +6,13 @@ function FormView({form,fields,onBackClick,updateFormStatus,setSelectedForm,init
 
   const [fieldValues, setFieldValues] = useState({});
   const [isFormChanged, setIsFormChanged] = useState(false);
-  const [status, setStatus] = useState(initialStatus); //  Состояние для хранения статуса формы
+  const [status, setStatus] = useState(initialStatus);
 
   useEffect(() => {
     const hasValues = Object.keys(fieldValues).length > 0;
     if (hasValues && form.status !== 'solved') {
         updateFormStatus(form.id, 'in progress');
-        setStatus('in progress'); //  Обновляем локальное состояние статуса
+        setStatus('in progress');
     }
 }, [fieldValues, form.status, form.id, updateFormStatus]);
   const handleInputChange = (event) => {
@@ -22,12 +22,14 @@ function FormView({form,fields,onBackClick,updateFormStatus,setSelectedForm,init
         ...fieldValues,
         [name]: value,
     });
-    setIsFormChanged(true);
     // обновление статуса на in progress, если форма не доделана
     if (form.status !== 'solved') {
         updateFormStatus(form.id, 'in progress');
         setStatus('in progress');
+    } else if (!hasValues) {
+      setStatus(initialStatus);
     }
+    setIsFormChanged(true);
 };
 
 
@@ -51,7 +53,7 @@ function FormView({form,fields,onBackClick,updateFormStatus,setSelectedForm,init
       <h1>{form.title}</h1>
       <p>Статус: {status}</p>
       {fields && fields.length > 0 ? (
-        fields.map((field) => (
+        fields?.map((field) => (
           <div className='field-container' key={field.name}>
             <label className='label' htmlFor={field.name}>{field.label}:</label>
             {field.type === 'textarea' ? (
@@ -74,7 +76,7 @@ function FormView({form,fields,onBackClick,updateFormStatus,setSelectedForm,init
         <p>Нет полей для отображения.</p>
         
       )}
-      <button type="submit" onClick={handleSubmit} disabled={form.status === 'solved' || !isFormChanged}>Отправить</button>
+      <button type="submit" onClick={handleSubmit} disabled={status === 'solved' || !isFormChanged}>Отправить</button>
     </div>
   )
 }
