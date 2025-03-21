@@ -2,12 +2,15 @@ const TelegramBot = require('node-telegram-bot-api');
 const dotenv = require('dotenv');
 dotenv.config();
 
+
 const token = process.env.TELEGRAM_BOT_TOKEN;
 if (!token) {
     console.error('TELEGRAM_BOT_TOKEN is not defined in .env');
     process.exit(1); // если токен не задан хуйня выходим
 };
-const bot = new TelegramBot(token, { polling: true });
+
+
+const bot = new TelegramBot(token);
 const webAppUrl = 'https://web-app-debugging.netlify.app';
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;

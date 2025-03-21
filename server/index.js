@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const { Pool } = require('pg');
 const cors = require('cors');
 const bot = require('./telegram-test-bot')
+const fs = require('fs');
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,6 +13,10 @@ app.use(cors())
 app.use(express.json())
 app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
+});
+app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+    bot.processUpdate(req.body);
+    res.sendStatus(200);
 });
 
 
@@ -71,6 +76,10 @@ app.get('/api/test', (req, res) => {
 
 const start = async () => {
     try {
+        const webhookUrl = `${process.env.WEB_APP_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+        await bot.setWebHook(webhookUrl);
+        console.log('Webhook установлен:', webhookUrl);
+
         app.listen(PORT, () => console.log(`server started on port ${PORT}`))
     } catch (e) {
         console.log(e)
