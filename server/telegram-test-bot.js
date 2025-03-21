@@ -15,7 +15,9 @@ const webAppUrl = 'https://web-app-debugging.netlify.app';
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
+    console.log(`Received message from chat ${chatId}: ${msg.text}`);
     if(text === '/start') {
+        console.log('Команда /start получена!');
         await bot.sendMessage(chatId,'ниже появится кнопка', {
             reply_markup: {
                 inline_keyboard:[

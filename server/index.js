@@ -15,6 +15,7 @@ app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
 });
 app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
+    console.log('Получен POST-запрос от Telegram:', req.body); //  Добавляем логирование
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });
