@@ -16,7 +16,7 @@ bot.on('message', async (msg) => {
         await bot.sendMessage(chatId,'ниже появится кнопка', {
             reply_markup: {
                 inline_keyboard:[
-                    [{text:'заполнить', web_app:{url:webAppUrl}}]
+                    [{ text: 'заполнить', web_app: { url: `${webAppUrl}?user_id=${chatId}` } }],
                 ]
             }
         })

@@ -1,19 +1,18 @@
 import './App.css';
 import {useState,useEffect} from 'react';
 import FormsList from './Components/FormsList';
-import FormView from './Components/FormView'
+import FormView from './Components/FormView';
+import queryString from 'query-string';
 const tg = window.Telegram.WebApp;
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 function App() {
-  // const myData = [
-  //   {id: 1, title:'Обратная связь по 24.02.2024',status:'active'},
-  //   {id: 2, title:'Студсовет на минималках',status:'solved'},
-  //   {id: 3, title:'Волонтерство',status:'in progress'},
-  //   {id: 4, title:'оргия в общаге на шаболовской',status:'in progress'},
-  //   {id: 5, title:'Выборы главного петуха блока',status:'active'},
-  // ];
-
   useEffect(() => {
     tg.ready();
+
+    const parsedQuery = queryString.parse(window.location.search);
+    const userIdFromUrl = parsedQuery.user_id;
+    setUserId(userIdFromUrl); //  Устанавливаем ID пользователя
+
     const loadData = async () => {
       try {
         
@@ -25,6 +24,15 @@ function App() {
         const formFieldsResponse = await fetch('/formFields.json');
         const formFieldsData = await formFieldsResponse.json();
         setFormFields(formFieldsData);
+
+
+        if (userIdFromUrl) {
+          const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
+          const statusesData = await statusesResponse.json();
+          setUserStatuses(statusesData);
+      }
+
+
       } catch (error) {
         console.error('Ошибка загрузки данных:', error);
         
@@ -33,6 +41,7 @@ function App() {
 
     loadData();
   }, []);
+
   const onClose = () => {
     tg.close()
   };
@@ -43,6 +52,10 @@ function App() {
 
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [userStatuses, setUserStatuses] = useState({}); //  Состояние для хранения статусов пользователя
+  const [userId, setUserId] = useState(null); //  Состояние для хранения ID пользователя
+  const [formFields, setFormFields] = useState({});
+
 
 
   const handleFormClick = (formId) => {
@@ -50,17 +63,36 @@ function App() {
     setSelectedForm(form);
   };
   // для обновления статуса формы
-  const updateFormStatus = (formId, newStatus) => {
-    const updatedForms = forms.map(form => {
-      if (form.id === formId) {
-        return { ...form, status: newStatus };
-      }
-      return form;
-    });
-    // состояние forms новым массивом
-    setForms(updatedForms);
+  const updateFormStatus = async (formId, newStatus) => {
+    try {
+      await fetch(`/api/user-statuses/${userId}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ formId: formId, status: newStatus }),
+      });
+
+      //  Обновляем состояние на фронтенде
+      setUserStatuses({
+          ...userStatuses,
+          [formId]: newStatus,
+      });
+
+      //  Обновляем статус в списке форм (необязательно, если хотите отображать актуальный статус в списке)
+      const updatedForms = forms.map((form) => {
+          if (form.id === formId) {
+              return { ...form, status: newStatus };
+          }
+          return form;
+      });
+      setForms(updatedForms);
+  } catch (error) {
+      console.error('Ошибка обновления статуса:', error);
+  }
   };
-  const [formFields, setFormFields] = useState({});
+
+
   return (
     <div className="App">
       <button onClick={onClose}>Закрыть</button>
@@ -68,9 +100,20 @@ function App() {
         <h1 className='MainTitle'>СтудФормы</h1>
       </div>
       {selectedForm ? (
-        <FormView form={selectedForm} onBackClick={handleBackClick} fields={formFields[selectedForm.id]} updateFormStatus={updateFormStatus} setSelectedForm={setSelectedForm}/>
+        <FormView 
+        form={selectedForm} 
+        onBackClick={handleBackClick} 
+        fields={formFields[selectedForm.id]} 
+        updateFormStatus={updateFormStatus} 
+        setSelectedForm={setSelectedForm}
+        initialStatus={userStatuses[selectedForm.id] || 'active'} //  Передаем начальный статус формы
+        userId={userId} // Передаем ID пользователя
+        />
       ) : (
-        <FormsList items={forms} onFormClick={handleFormClick} />
+        <FormsList items={forms.map(form => ({
+          ...form,
+          status: userStatuses[form.id] || 'active' //  Подставляем статус из userStatuses или 'active' по умолчанию
+      }))} onFormClick={handleFormClick} />
       )}
     </div>
   );
