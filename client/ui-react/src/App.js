@@ -30,6 +30,7 @@ function App() {
           const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
           const statusesData = await statusesResponse.json();
           setUserStatuses(statusesData);
+          console.log('Статусы пользователя загружены:', statusesData);
       }
 
 
@@ -87,6 +88,7 @@ function App() {
           return form;
       });
       setForms(updatedForms);
+      console.log(`Статус формы ${formId} обновлен на ${newStatus}`);
   } catch (error) {
       console.error('Ошибка обновления статуса:', error);
   }

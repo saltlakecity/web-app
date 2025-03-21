@@ -17,7 +17,7 @@ bot.on('message', async (msg) => {
     const text = msg.text;
     console.log(`Received message from chat ${chatId}: ${msg.text}`);
     if(text === '/start') {
-        console.log('Команда /start получена!');
+        console.log('команда /start');
         await bot.sendMessage(chatId,'ниже появится кнопка', {
             reply_markup: {
                 inline_keyboard:[
