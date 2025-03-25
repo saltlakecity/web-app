@@ -26,9 +26,7 @@ function FormView({form,fields,onBackClick,updateFormStatus,setSelectedForm,init
     if (form.status !== 'solved') {
         updateFormStatus(form.id, 'in progress');
         setStatus('in progress');
-    } else if (!hasValues) {
-      setStatus(initialStatus);
-    }
+    } 
     setIsFormChanged(true);
 };
 
