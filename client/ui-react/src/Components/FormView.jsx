@@ -89,6 +89,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
 
         //  Сохраняем ответы в БД при каждом изменении
         saveResponses();
+        
     };
 
     const handleSubmit = async (event) => {
