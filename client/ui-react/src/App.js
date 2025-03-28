@@ -8,41 +8,41 @@ function App() {
   useEffect(() => {
           // Проверка инициализации Telegram WebApp
     if (window.Telegram && window.Telegram.WebApp) {
-              tg.ready();
-              const parsedQuery = queryString.parse(window.location.search);
-              const userIdFromUrl = parsedQuery.user_id;
-              setUserId(userIdFromUrl);
-              const loadData = async () => {
-                  try {
-                      const formsResponse = await fetch('/forms.json'); // Проверьте путь!
-                      if (!formsResponse.ok) {
-                          throw new Error(`Ошибка загрузки forms.json: ${formsResponse.status}`);
-                      }
-                      const formsData = await formsResponse.json();
-                      setForms(formsData);
-                      const formFieldsResponse = await fetch('/formFields.json'); // Проверьте путь!
-                      if (!formFieldsResponse.ok) {
-                          throw new Error(`Ошибка загрузки formFields.json: ${formFieldsResponse.status}`);
-                      }
-                      const formFieldsData = await formFieldsResponse.json();
-                      setFormFields(formFieldsData);
-                      if (userIdFromUrl) {
-                          const backendUrl = process.env.REACT_APP_BACKEND_URL; // Получаем URL здесь, чтобы быть уверенными, что он доступен
-                          if (!backendUrl) {
-                              throw new Error('REACT_APP_BACKEND_URL не определен!');
-                          }
-                          const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
-                          if (!statusesResponse.ok) {
-                              throw new Error(`Ошибка загрузки статусов: ${statusesResponse.status}`);
-                          }
-                          const statusesData = await statusesResponse.json();
-                          setUserStatuses(statusesData);
-                          console.log('Статусы пользователя загружены:', statusesData);
-                      }
-                  } catch (error) {
-                      console.error('Ошибка загрузки данных:', error);
-                  }
-              };
+        tg.ready();
+        const parsedQuery = queryString.parse(window.location.search);
+        const userIdFromUrl = parsedQuery.user_id;
+        setUserId(userIdFromUrl);
+        const loadData = async () => {
+            try {
+                const formsResponse = await fetch('/forms.json'); // Проверьте путь!
+                if (!formsResponse.ok) {
+                    throw new Error(`Ошибка загрузки forms.json: ${formsResponse.status}`);
+                }
+                const formsData = await formsResponse.json();
+                setForms(formsData);
+                const formFieldsResponse = await fetch('/formFields.json'); // Проверьте путь!
+                if (!formFieldsResponse.ok) {
+                    throw new Error(`Ошибка загрузки formFields.json: ${formFieldsResponse.status}`);
+                }
+                const formFieldsData = await formFieldsResponse.json();
+                setFormFields(formFieldsData);
+                if (userIdFromUrl) {
+                    const backendUrl = process.env.REACT_APP_BACKEND_URL; // Получаем URL здесь, чтобы быть уверенными, что он доступен
+                    if (!backendUrl) {
+                        throw new Error('REACT_APP_BACKEND_URL не определен!');
+                    }
+                    const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
+                    if (!statusesResponse.ok) {
+                        throw new Error(`Ошибка загрузки статусов: ${statusesResponse.status}`);
+                    }
+                    const statusesData = await statusesResponse.json();
+                    setUserStatuses(statusesData);
+                    console.log('Статусы пользователя загружены:', statusesData);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+            }
+        };
   
               loadData();
           } else {
