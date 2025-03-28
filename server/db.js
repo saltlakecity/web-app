@@ -10,3 +10,4 @@ const {Sequelize} = require('sequelize')
 //         port:process.env.DB_PORT
 //     }
 // )
+
