@@ -7,7 +7,7 @@ const tg = window.Telegram.WebApp;
 function App() {
   useEffect(() => {
           // Проверка инициализации Telegram WebApp
-          if (window.Telegram && window.Telegram.WebApp) {
+    if (window.Telegram && window.Telegram.WebApp) {
               tg.ready();
               const parsedQuery = queryString.parse(window.location.search);
               const userIdFromUrl = parsedQuery.user_id;
