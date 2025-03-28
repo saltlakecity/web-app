@@ -21,7 +21,7 @@
             allowNull: false
           },
           createdAt: {
-            allowNull: false,
+            allowNull: True,
             type: Sequelize.DATE
           },
           updatedAt: {
