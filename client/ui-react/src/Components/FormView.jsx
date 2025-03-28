@@ -4,50 +4,64 @@ import { useState, useEffect } from 'react';
 
 function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm, initialStatus, userId }) {
 
-    const [fieldValues, setFieldValues] = useState({});
-    const [isFormChanged, setIsFormChanged] = useState(false);
-    const [status, setStatus] = useState(initialStatus);
-    const [isSubmitted, setIsSubmitted] = useState(false); //  Новое состояние
+  const [fieldValues, setFieldValues] = useState({});
+  const [isFormChanged, setIsFormChanged] = useState(false);
+  const [status, setStatus] = useState(initialStatus);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isFormValid, setIsFormValid] = useState(false); //  Новое состояние для валидации формы
+
+  useEffect(() => {
+      setStatus(initialStatus);
+    }, [initialStatus]);
+
+  useEffect(() => {
+    if (!isSubmitted && isFormChanged) {
+        if (Object.keys(fieldValues).length > 0) {
+          updateFormStatus(form.id, 'in progress');
+          setStatus('in progress');
+          }
+        }
+    }, [fieldValues, form.id, updateFormStatus, isSubmitted, isFormChanged]);
 
     useEffect(() => {
-      //  Инициализация fieldValues при монтировании компонента, если форма уже имеет данные
-      if (form.status === 'solved') {
-          setIsSubmitted(true);
-      }
-  }, [form.status]);
-    useEffect(() => {
-        //  Обновляем статус только если форма не отправлена и есть изменения
-        if (!isSubmitted && isFormChanged) {
-            if (Object.keys(fieldValues).length > 0 && status !== 'solved') {
-                updateFormStatus(form.id, 'in progress');
-                setStatus('in progress');
-            }
-        }
-    }, [fieldValues, form.id, updateFormStatus, isSubmitted, isFormChanged, status]);
+        //  Функция для проверки заполненности всех полей
+      const validateForm = () => {
+          if (!fields) return false; //  Если нет полей, форма невалидна
+
+          for (const field of fields) {
+              if (!fieldValues[field.name]) {
+                  return false; //  Если хоть одно поле не заполнено, форма невалидна
+              }
+          }
+          return true; //  Если все поля заполнены, форма валидна
+      };
+
+      setIsFormValid(validateForm()); //  Устанавливаем состояние валидности формы
+    }, [fieldValues, fields]);
 
     const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setFieldValues({
-            ...fieldValues,
-            [name]: value,
-        });
-        setIsFormChanged(true); //  Помечаем, что форма изменена
+      const { name, value } = event.target;
+      setFieldValues({
+          ...fieldValues,
+          [name]: value,
+      });
+      setIsFormChanged(true);
     };
 
     const handleSubmit = (event) => {
-        event.preventDefault();
-        updateFormStatus(form.id, 'solved');
-        setStatus('solved');
-        setIsSubmitted(true); //  Помечаем, что форма отправлена
-        setIsFormChanged(false); //  Форма больше не считается измененной
-        setSelectedForm(null);
+      event.preventDefault();
+      updateFormStatus(form.id, 'solved');
+      setStatus('solved');
+      setIsSubmitted(true);
+      setIsFormChanged(false);
+      setSelectedForm(null);
     };
 
     return (
-        <div className='container'>
-            <div>
-                <button onClick={onBackClick} className='button'>Назад</button>
-            </div>
+      <div className='container'>
+          <div>
+              <button onClick={onBackClick} className='button'>Назад</button>
+          </div>
             <h1>{form.title}</h1>
             <p>Статус: {status}</p>
             {fields && fields.length > 0 ? (
@@ -71,7 +85,13 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                 <p>Нет полей для отображения.</p>
 
             )}
-            <button type="submit" onClick={handleSubmit} disabled={status === 'solved' || !isFormChanged}>Отправить</button>
+            <button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={status === 'solved' || !isFormValid} //  Кнопка отключена, если форма невалидна
+            >
+                Отправить
+            </button>
         </div>
     );
 }
