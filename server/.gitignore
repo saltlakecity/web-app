@@ -3,3 +3,8 @@
 .pnp.js
 
 .env
+
+/models
+/migrations
+/seeders
+/config
