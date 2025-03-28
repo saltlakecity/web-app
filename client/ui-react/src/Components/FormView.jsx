@@ -10,6 +10,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
     const [status, setStatus] = useState(initialStatus);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Состояние для индикатора загрузки
 
     useEffect(() => {
         const loadSavedResponses = async () => {
@@ -89,11 +90,20 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        await updateFormStatus(form.id, 'solved');
-        setStatus('solved');
-        setIsSubmitted(true);
-        setIsFormChanged(false);
-        //setSelectedForm(null); // Убрано, чтобы не уходить сразу.
+        setIsSubmitting(true); // Включаем индикатор загрузки
+        try {
+            await updateFormStatus(form.id, 'solved'); // Ждем завершения обновления статуса
+            setStatus('solved');
+            setIsSubmitted(true);
+            setIsFormChanged(false);
+            setSelectedForm(null); // Переходим на FormsList только после успешного обновления
+        } catch (error) {
+            console.error("Ошибка при отправке формы:", error);
+            // Обработайте ошибку здесь, например, покажите сообщение пользователю
+            alert("Произошла ошибка при отправке формы. Попробуйте еще раз."); // Простое сообщение об ошибке
+        } finally {
+            setIsSubmitting(false); // Выключаем индикатор загрузки в любом случае
+        }
     };
 
     return (
@@ -148,9 +158,9 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
             <button
                 type="submit"
                 onClick={handleSubmit}
-                disabled={isSubmitted || !isFormValid} //  кнопка отправить не работает если форма решена или форма не валидна
+                disabled={isSubmitted || !isFormValid || isSubmitting} //  кнопка отправить не работает если форма решена или форма не валидна
             >
-                Отправить
+                {isSubmitting ? "Отправка..." : "Отправить"}
             </button>
         </div>
     );
