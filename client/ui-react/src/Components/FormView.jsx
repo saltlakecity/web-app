@@ -12,10 +12,6 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
     const [isFormValid, setIsFormValid] = useState(false);
 
     useEffect(() => {
-        setStatus(initialStatus);
-    }, [initialStatus]);
-
-    useEffect(() => {
         const loadSavedResponses = async () => {
             try {
                 const backendUrl = process.env.REACT_APP_BACKEND_URL;
@@ -38,13 +34,13 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
     }, [form.id, userId]);
 
     useEffect(() => {
-        if (!isSubmitted && isFormChanged) {
+        if (!isSubmitted && isFormChanged && status !== 'solved') {
             if (Object.keys(fieldValues).length > 0) {
                 updateFormStatus(form.id, 'in progress');
                 setStatus('in progress');
             }
         }
-    }, [fieldValues, form.id, updateFormStatus, isSubmitted, isFormChanged]);
+    }, [fieldValues, form.id, updateFormStatus, isSubmitted, isFormChanged, status]);
 
     useEffect(() => {
         const validateForm = () => {
@@ -89,7 +85,6 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
 
         //  Сохраняем ответы в БД при каждом изменении
         saveResponses();
-        
     };
 
     const handleSubmit = async (event) => {
@@ -98,7 +93,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
         setStatus('solved');
         setIsSubmitted(true);
         setIsFormChanged(false);
-        setSelectedForm(null);
+        //setSelectedForm(null); // Убрано, чтобы не уходить сразу.
     };
 
     return (
@@ -119,7 +114,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                                 name={field.name}
                                 value={fieldValues[field.name] || ''}
                                 onChange={handleInputChange}
-                                disabled={status === 'solved'} //  блокировка если статус решен
+                                disabled={isSubmitted} //  блокировка если статус решен
                             />
                         ) : field.type === 'select' ? (
                             <select
@@ -128,7 +123,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                                 name={field.name}
                                 value={fieldValues[field.name] || ''}
                                 onChange={handleInputChange}
-                                disabled={status === 'solved'} //  блокировка если статус решен
+                                disabled={isSubmitted} //  блокировка если статус решен
                             >
                                 {field.options.map((option) => (
                                     <option className='textarea' key={option} value={option}>{option}</option>
@@ -142,7 +137,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                                 name={field.name}
                                 value={fieldValues[field.name] || ''}
                                 onChange={handleInputChange}
-                                disabled={status === 'solved'} //  блокировка если статус решен
+                                disabled={isSubmitted} //  блокировка если статус решен
                             />
                         )}
                     </div>
@@ -153,7 +148,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
             <button
                 type="submit"
                 onClick={handleSubmit}
-                disabled={status === 'solved' || !isFormValid} //  кнопка отправить не работает если форма решена или форма не валидна
+                disabled={isSubmitted || !isFormValid} //  кнопка отправить не работает если форма решена или форма не валидна
             >
                 Отправить
             </button>

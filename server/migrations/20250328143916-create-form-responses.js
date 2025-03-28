@@ -21,11 +21,11 @@
             allowNull: false
           },
           createdAt: {
-            allowNull: True,
+            allowNull: true,
             type: Sequelize.DATE
           },
           updatedAt: {
-            allowNull: True,
+            allowNull: true,
             type: Sequelize.DATE
           }
         });
