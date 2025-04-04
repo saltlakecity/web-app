@@ -4,6 +4,9 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const bot = require('./telegram-test-bot')
 const fs = require('fs');
+const { sanitize } = require('dompurify');
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,7 +18,7 @@ app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
 });
 app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
-    console.log('Получен POST-запрос от Telegram:', req.body); //  Добавляем логирование
+    console.log('Получен POST-запрос от Telegram:', req.body); //  логирование
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });
@@ -98,7 +101,14 @@ app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     try {
         //  обьект ответов в строку json Для хранения
         const responsesJson = JSON.stringify(responses);
-
+        for (const key in responses) {
+            if (responses.hasOwnProperty(key)) {
+                if (typeof responses[key] === 'string') {
+                    // экранирование html спецсимволов
+                    responses[key] = escapeHtml(responses[key]);
+                }
+            }
+        }
         //  проверка существования записи
         const checkResult = await pool.query(
             'SELECT 1 FROM form_responses WHERE user_id = $1 AND form_id = $2',
@@ -126,6 +136,25 @@ app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     }
 });
 
+// функция для экранирования спецсимволов
+function escapeHtml(string) {
+    return string.replace(/[&<>"']/g, function(m) {
+        switch (m) {
+            case '&':
+                return '&amp;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '"':
+                return '&quot;';
+            case "'":
+                return '&#039;';
+            default:
+                return m;
+        }
+    });
+}
 
 // API для получения ответов пользователя
 app.get('/api/form-responses/:userId/:formId', async (req, res) => {
@@ -140,7 +169,15 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
 
         if (result.rows.length > 0) {
             //  извлекаем ответы из бд и преобразуем в json
-            const responses = JSON.parse(result.rows[0].responses);
+            let responses = JSON.parse(result.rows[0].responses);
+              // десанитайзинг при получении из бд
+            for (const key in responses) {
+                if (responses.hasOwnProperty(key)) {
+                    if (typeof responses[key] === 'string') {
+                        responses[key] = unescapeHtml(responses[key]);
+                    }
+                }
+            }
             res.json(responses);
         } else {
             //  если нет ответов преобразуем в пустой обьект
@@ -152,6 +189,25 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
     }
 });
 
+// функция для экранирования спецсимволов
+function escapeHtml(string) {
+    return string.replace(/[&<>"']/g, function(m) {
+        switch (m) {
+            case '&':
+                return '&amp;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '"':
+                return '&quot;';
+            case "'":
+                return '&#039;';
+            default:
+                return m;
+        }
+    });
+}
 
 const start = async () => {
     try {

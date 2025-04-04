@@ -90,19 +90,18 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setIsSubmitting(true); // Включаем индикатор загрузки
+        setIsSubmitting(true);
         try {
-            await updateFormStatus(form.id, 'solved'); // Ждем завершения обновления статуса
+            await updateFormStatus(form.id, 'solved');
             setStatus('solved');
             setIsSubmitted(true);
             setIsFormChanged(false);
-            setSelectedForm(null); // Переходим на FormsList только после успешного обновления
+            setSelectedForm(null);
         } catch (error) {
             console.error("Ошибка при отправке формы:", error);
-            // Обработайте ошибку здесь, например, покажите сообщение пользователю
-            alert("Произошла ошибка при отправке формы. Попробуйте еще раз."); // Простое сообщение об ошибке
+            alert("Произошла ошибка при отправке формы. Попробуйте еще раз.");
         } finally {
-            setIsSubmitting(false); // Выключаем индикатор загрузки в любом случае
+            setIsSubmitting(false);
         }
     };
 
