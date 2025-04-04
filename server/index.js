@@ -4,9 +4,10 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const bot = require('./telegram-test-bot')
 const fs = require('fs');
-const { sanitize } = require('dompurify');
+const { sanitize } = require('dompurify'); //  dompurify от xss
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,7 +19,7 @@ app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
 });
 app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
-    console.log('Получен POST-запрос от Telegram:', req.body); //  логирование
+    console.log('Получен POST-запрос от Telegram:', req.body); //  Добавляем логирование
     bot.processUpdate(req.body);
     res.sendStatus(200);
 });
@@ -91,24 +92,64 @@ app.post('/api/user-statuses/:userId', async (req, res) => {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
+// экранирование спецсимволов
+function escapeHtml(string) {
+    return string.replace(/[&<>"']/g, function(m) {
+        switch (m) {
+            case '&':
+                return '&amp;';
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '"':
+                return '&quot;';
+            case "'":
+                return '&#039;';
+            default:
+                return m;
+        }
+    });
+}
 
+// дээкранирование спецсимволов
+function unescapeHtml(string) {
+    return string.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {
+        switch (m) {
+            case '&amp;':
+                return '&';
+            case '&lt;':
+                return '<';
+            case '&gt;':
+                return '>';
+            case '&quot;':
+                return '"';
+            case '&#039;':
+                return "'";
+            default:
+                return m;
+        }
+    });
+}
 //  API для сохранения ответов пользователя
 app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     const userId = req.params.userId;
     const formId = req.params.formId;
-    const responses = req.body;
+    let responses = req.body;
 
     try {
+        // санитайзинг данных 
+          for (const key in responses) {
+              if (responses.hasOwnProperty(key)) {
+                  if (typeof responses[key] === 'string') {
+                      // экранирование html
+                      responses[key] = escapeHtml(responses[key]);
+                  }
+              }
+          }
         //  обьект ответов в строку json Для хранения
         const responsesJson = JSON.stringify(responses);
-        for (const key in responses) {
-            if (responses.hasOwnProperty(key)) {
-                if (typeof responses[key] === 'string') {
-                    // экранирование html спецсимволов
-                    responses[key] = escapeHtml(responses[key]);
-                }
-            }
-        }
+
         //  проверка существования записи
         const checkResult = await pool.query(
             'SELECT 1 FROM form_responses WHERE user_id = $1 AND form_id = $2',
@@ -136,25 +177,6 @@ app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     }
 });
 
-// функция для экранирования спецсимволов
-function escapeHtml(string) {
-    return string.replace(/[&<>"']/g, function(m) {
-        switch (m) {
-            case '&':
-                return '&amp;';
-            case '<':
-                return '&lt;';
-            case '>':
-                return '&gt;';
-            case '"':
-                return '&quot;';
-            case "'":
-                return '&#039;';
-            default:
-                return m;
-        }
-    });
-}
 
 // API для получения ответов пользователя
 app.get('/api/form-responses/:userId/:formId', async (req, res) => {
@@ -170,10 +192,11 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
         if (result.rows.length > 0) {
             //  извлекаем ответы из бд и преобразуем в json
             let responses = JSON.parse(result.rows[0].responses);
-              // десанитайзинг при получении из бд
+              // десанитизация данных из бд
             for (const key in responses) {
                 if (responses.hasOwnProperty(key)) {
                     if (typeof responses[key] === 'string') {
+                        // восстановление html символов
                         responses[key] = unescapeHtml(responses[key]);
                     }
                 }
@@ -189,25 +212,7 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
     }
 });
 
-// функция для экранирования спецсимволов
-function escapeHtml(string) {
-    return string.replace(/[&<>"']/g, function(m) {
-        switch (m) {
-            case '&':
-                return '&amp;';
-            case '<':
-                return '&lt;';
-            case '>':
-                return '&gt;';
-            case '"':
-                return '&quot;';
-            case "'":
-                return '&#039;';
-            default:
-                return m;
-        }
-    });
-}
+
 
 const start = async () => {
     try {
