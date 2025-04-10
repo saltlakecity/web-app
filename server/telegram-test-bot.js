@@ -11,7 +11,7 @@ if (!token) {
 
 
 const bot = new TelegramBot(token);
-const webAppUrl = 'https://web-app-debugging.netlify.app';
+const webAppUrl = process.env.WEB_APP_URL;
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;

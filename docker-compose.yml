@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  frontend:
+    build:
+      context: ./client/ui-react
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_BACKEND_URL=https://185.221.155.129:5000
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DATABASE_URL=postgresql://dev_user:dev2134@postgre:5432/feedback_db-dev
+      - TELEGRAM_BOT_TOKEN=8127900206:AAH_562gd5k-vASVMuj0XXNfaDcUHzOhpmE
+      - WEB_APP_URL=https://185.221.155.129
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev2134
+      POSTGRES_DB: feedback_db-dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
