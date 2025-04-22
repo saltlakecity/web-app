@@ -1,22 +1,20 @@
 {
     "1": [
-      { "name": "name", "label": "Ваше имя", "type": "textarea" },
-      { "name": "feedback", "label": "Ваш отзыв", "type": "textarea" }
+      { "name": "name", "label": "Ваше ФИО", "type": "textarea" },
+      { "name": "institute", "label": "Ваш институт", "type": "textarea" },
+      { "name": "academGroup", "label": "Академическая группа", "type": "textarea" },
+      { "name": "feedback", "label": "Ваше мнение", "type": "textarea" }
     ],
     "2": [
-      { "name": "ideas", "label": "Предложения", "type": "textarea" },
-      { "name": "priority", "label": "Приоритет", "type": "select", "options": ["Высокий", "Средний", "Низкий"] }
+      { "name": "name", "label": "Ваше ФИО", "type": "textarea" },
+      { "name": "institute", "label": "Ваш институт", "type": "textarea" },
+      { "name": "academGroup", "label": "Ваша академическая группа", "type": "textarea" },
+      { "name": "feedback", "label": "Почему Вы хотите придти на проект?", "type": "textarea" }
     ],
     "3": [
-        { "name": "skills", "label": "Навыки", "type": "textarea" },
-        { "name": "time", "label": "Количество времени", "type": "number" }
-    ],
-    "4":[
-      { "name": "participants", "label": "Количество", "type": "number" },
-      { "name": "date", "label": "Дата", "type": "date" }
-    ],
-    "5":[
-      { "name": "candidates", "label": "Кандидаты", "type": "text" },
-      { "name": "places", "label": "Количество мест", "type": "number" }
+        { "name": "name", "label": "Ваше ФИО", "type": "textarea" },
+        { "name": "institute", "label": "Ваш институт", "type": "textarea" },
+        { "name": "academGroup", "label": "Ваша академическая группа", "type": "textarea" },
+        { "name": "skills", "label": "Ваши навыки", "type": "textarea" }
     ]
 }

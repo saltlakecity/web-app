@@ -6,7 +6,7 @@ import queryString from 'query-string';
 const tg = window.Telegram.WebApp;
 function App() {
   useEffect(() => {
-          // Проверка инициализации Telegram WebApp
+          // инициализация webapp в тгшечке
     if (window.Telegram && window.Telegram.WebApp) {
         tg.ready();
         const parsedQuery = queryString.parse(window.location.search);
@@ -14,20 +14,20 @@ function App() {
         setUserId(userIdFromUrl);
         const loadData = async () => {
             try {
-                const formsResponse = await fetch('/forms.json'); // Проверьте путь!
+                const formsResponse = await fetch('/forms.json');
                 if (!formsResponse.ok) {
                     throw new Error(`Ошибка загрузки forms.json: ${formsResponse.status}`);
                 }
                 const formsData = await formsResponse.json();
                 setForms(formsData);
-                const formFieldsResponse = await fetch('/formFields.json'); // Проверьте путь!
+                const formFieldsResponse = await fetch('/formFields.json');
                 if (!formFieldsResponse.ok) {
                     throw new Error(`Ошибка загрузки formFields.json: ${formFieldsResponse.status}`);
                 }
                 const formFieldsData = await formFieldsResponse.json();
                 setFormFields(formFieldsData);
                 if (userIdFromUrl) {
-                    const backendUrl = process.env.REACT_APP_BACKEND_URL; // Получаем URL здесь, чтобы быть уверенными, что он доступен
+                    const backendUrl = process.env.REACT_APP_BACKEND_URL; // получение url и проверка на доступность
                     if (!backendUrl) {
                         throw new Error('REACT_APP_BACKEND_URL не определен!');
                     }
@@ -48,7 +48,7 @@ function App() {
           } else {
               console.error('Telegram WebApp не инициализирован!');
           }
-      }, []); // Важно: пустой массив зависимостей!
+      }, []);
 
       const onClose = () => {
         if (window.Telegram && window.Telegram.WebApp) {
@@ -64,8 +64,8 @@ function App() {
 
   const [forms, setForms] = useState([]);
   const [selectedForm, setSelectedForm] = useState(null);
-  const [userStatuses, setUserStatuses] = useState({}); //  Состояние для хранения статусов пользователя
-  const [userId, setUserId] = useState(null); //  Состояние для хранения ID пользователя
+  const [userStatuses, setUserStatuses] = useState({});
+  const [userId, setUserId] = useState(null);
   const [formFields, setFormFields] = useState({});
 
 
@@ -77,7 +77,7 @@ function App() {
   // для обновления статуса формы
   const updateFormStatus = async (formId, newStatus) => {
     try {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL; // Получаем URL здесь, чтобы быть уверенными, что он доступен
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
         if (!backendUrl) {
             throw new Error('REACT_APP_BACKEND_URL не определен!');
         }
@@ -125,13 +125,13 @@ function App() {
         fields={formFields[selectedForm.id]} 
         updateFormStatus={updateFormStatus} 
         setSelectedForm={setSelectedForm}
-        initialStatus={userStatuses[selectedForm.id] || 'active'} //  Передаем начальный статус формы
-        userId={userId} // Передаем ID пользователя
+        initialStatus={userStatuses[selectedForm.id] || 'active'}
+        userId={userId}
         />
       ) : (
         <FormsList items={forms.map(form => ({
           ...form,
-          status: userStatuses[form.id] || 'active' //  Подставляем статус из userStatuses или 'active' по умолчанию
+          status: userStatuses[form.id] || 'active'
       }))} onFormClick={handleFormClick} />
       )}
     </div>
