@@ -19,10 +19,11 @@
     margin-left:10px;
 }
 .form-element.active {
-    border-color: red;
-    box-shadow: 0 0 5px red,
-    inset 0 0 5px red;
-    background-color: red;
+    border-color: #FFBCC1;
+    box-shadow: 0 0 5px #FFBCC1,
+    inset 0 0 5px #FFBCC1;
+    background-color: #FFBCC1;
+    color:#CC1D23;
 }
 .form-element.solved {
     border-color: green;
@@ -31,10 +32,10 @@
     background-color: green;
 }
 .form-element.inprogress {
-    border-color: orange;
-    box-shadow: 0 0 5px orange,
-    inset 0 0 5px orange;
-    background-color:orange;
+    border-color: #FFBCC1;
+    box-shadow: 0 0 5px #FFBCC1,
+    inset 0 0 5px #FFBCC1;
+    background-color:white;
 }
 .status {
     position:absolute;

@@ -11,9 +11,8 @@
 } */
 
 body {
-    background-color: #333333;
+    background-color: white;
     color:#FFFFFF;
-    background: linear-gradient(to right, #d53369, #cbad6d);
 }
 .MainTitle-container {
     display:flex;
@@ -22,4 +21,7 @@ body {
 }
 .MainTitle {
     align-self:center;
+}
+.exitButton {
+    position: absolute;
 }
