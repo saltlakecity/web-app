@@ -108,14 +108,14 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
     return (
         <div className='formview-container'>
             <div>
+                <div className='formview-header'>
+                    <img src="/Top.png" alt="/Top.png" />
+                </div>
                 <div onClick={onClose} className='formview-exitButton'>
                     <img src='/christ.png' alt='/christ.png'/>
                 </div>
                 <div onClick={onBackClick} className='button'>
                     <img src='/arrowleft.png' alt='/arrowleft.png' className='form-view-arrow'/>
-                </div>
-                <div className='formview-header'>
-                    <img src="/Top.png" alt="/Top.png" />
                 </div>
             </div>
             <h1 className='form-title'>{form.title}</h1>
