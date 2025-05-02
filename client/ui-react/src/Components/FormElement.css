@@ -23,19 +23,21 @@
     box-shadow: 0 0 5px #FFBCC1,
     inset 0 0 5px #FFBCC1;
     background-color: #FFBCC1;
-    color:#CC1D23;
+    color:red;
 }
 .form-element.solved {
-    border-color: green;
-    box-shadow: 0 0 5px green,
-    inset 0 0 5px green;
-    background-color: green;
+    border-color: #FFBCC1;
+    box-shadow: 0 0 5px #FFBCC1,
+    inset 0 0 5px #FFBCC1;
+    background-color: white;
+    color:green;
 }
 .form-element.inprogress {
     border-color: #FFBCC1;
     box-shadow: 0 0 5px #FFBCC1,
     inset 0 0 5px #FFBCC1;
     background-color:white;
+    color:orange;
 }
 .status {
     position:absolute;
