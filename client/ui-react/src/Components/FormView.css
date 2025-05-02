@@ -77,7 +77,8 @@
     color: white;
     font-family: "Montserrat", sans-serif;
     font-weight:600;
-    margin-top: 20px;
+    margin-top: 25px;
+    margin-left:18px;
 }
 .submitButton {
     align-self: center;
