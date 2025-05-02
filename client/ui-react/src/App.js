@@ -114,9 +114,10 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={onClose}>Закрыть</button>
+      <button onClick={onClose} className='exitButton'>Закрыть</button>
       <div className='MainTitle-container'>
-        <h1 className='MainTitle'>СтудФормы</h1>
+        {/* <h1 className='MainTitle'>СтудФормы</h1> */}
+        <img src="/Top.png" alt='/Top.png'/>
       </div>
       {selectedForm ? (
         <FormView 
