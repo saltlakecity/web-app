@@ -10,6 +10,8 @@
     display:flex;
     flex-direction: column;
     background-color: white;
+    width:100%;
+    height:100%;
 }
 .button {
     position: absolute;
