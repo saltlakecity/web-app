@@ -114,8 +114,10 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={onClose} className='exitButton'>Закрыть</button>
-      <div className='MainTitle-container'>
+      <div onClick={onClose} className={`exitButton ${selectedForm ? 'hidden' : ''}`}>
+        <img src='/christ.png' alt='/christ.png'/>
+      </div>
+      <div className={`MainTitle-container ${selectedForm ? 'hidden' : ''}`}>
         {/* <h1 className='MainTitle'>СтудФормы</h1> */}
         <img src="/Top.png" alt='/Top.png'/>
       </div>
@@ -128,6 +130,7 @@ function App() {
         setSelectedForm={setSelectedForm}
         initialStatus={userStatuses[selectedForm.id] || 'active'}
         userId={userId}
+        onClose={onClose}
         />
       ) : (
         <FormsList items={forms.map(form => ({

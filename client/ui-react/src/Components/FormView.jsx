@@ -3,7 +3,7 @@ import React from 'react';
 import './FormView.css';
 import { useState, useEffect } from 'react';
 
-function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm, initialStatus, userId }) {
+function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm, initialStatus, userId,onClose }) {
 
     const [fieldValues, setFieldValues] = useState({});
     const [isFormChanged, setIsFormChanged] = useState(false);
@@ -106,12 +106,20 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
     };
 
     return (
-        <div className='container'>
+        <div className='formview-container'>
             <div>
-                <button onClick={onBackClick} className='button'>Назад</button>
+                <div onClick={onClose} className='formview-exitButton'>
+                    <img src='/christ.png' alt='/christ.png'/>
+                </div>
+                <div onClick={onBackClick} className='button'>
+                    <img src='/arrowleft.png' alt='/arrowleft.png' className='form-view-arrow'/>
+                </div>
+                <div className='formview-header'>
+                    <img src="/Top.png" alt="/Top.png" />
+                </div>
             </div>
-            <h1>{form.title}</h1>
-            <p>Статус: {status}</p>
+            <h1 className='form-title'>{form.title}</h1>
+            {/* <p>Статус: {status}</p> */}
             {fields && fields.length > 0 ? (
                 fields?.map((field) => (
                     <div className='field-container' key={field.name}>
@@ -155,6 +163,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                 <p>Нет полей для отображения.</p>
             )}
             <button
+                className='submitButton'
                 type="submit"
                 onClick={handleSubmit}
                 disabled={isSubmitted || !isFormValid || isSubmitting} //  кнопка отправить не работает если форма решена или форма не валидна
