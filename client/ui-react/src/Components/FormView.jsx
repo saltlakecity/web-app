@@ -107,10 +107,12 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
 
     return (
         <div className='formview-container'>
-            <div>
-                <div className='formview-header'>
+            <div className='formview-header'>
+                {/* <h1 className='formview-title'>СТУДФОРМЫ</h1> */}
+                <h1 className='form-title'>{form.title}</h1>
+                {/* <div className='formview-header'>
                     <img src="/Top.png" alt="/Top.png" />
-                </div>
+                </div> */}
                 <div onClick={onClose} className='formview-exitButton'>
                     <img src='/christ.png' alt='/christ.png'/>
                 </div>
@@ -118,7 +120,6 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                     <img src='/arrowleft.png' alt='/arrowleft.png' className='form-view-arrow'/>
                 </div>
             </div>
-            <h1 className='form-title'>{form.title}</h1>
             {/* <p>Статус: {status}</p> */}
             {fields && fields.length > 0 ? (
                 fields?.map((field) => (
