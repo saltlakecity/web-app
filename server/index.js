@@ -213,7 +213,7 @@ const start = async () => {
         // Устанавливаем webhook
         await bot.setWebHook(webhookUrl);
         console.log('Webhook установлен:', webhookUrl);
-        webAppUrl = "https://web-app-debugging.netlify.app";
+        webAppUrl = process.env.WEB_APP_URL;
         //Теперь добавим обработчик событий message здесь, в index.js, чтобы использовать вебхук
         bot.on('message', async (msg) => {
             const chatId = msg.chat.id;
