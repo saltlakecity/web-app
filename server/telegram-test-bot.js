@@ -8,12 +8,31 @@ if (!token) {
     process.exit(1);
 }
 
-const bot = new TelegramBot(token);
+const bot = new TelegramBot(token); //  No polling!
 const webAppUrl = 'https://web-app-debugging.netlify.app';
 
-// УБЕРИТЕ ОБРАБОТЧИК СОБЫТИЙ "message" И "polling_error" ОТСЮДА!
-// Они больше не нужны, когда вы используете webhook.
-// Все сообщения будут поступать через POST-запросы на ваш сервер Express.
+bot.on('message', async (msg) => {
+    const chatId = msg.chat.id;
+    const text = msg.text;
+    console.log(`-> Message received in bot: ${text} from ${chatId}`); // **ОЧЕНЬ ВАЖНО**
+    if (text === '/start') {
+        console.log('-> /start command processing'); // **ОЧЕНЬ ВАЖНО**
+        try {
+            await bot.sendMessage(chatId, 'Button below:', {
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: 'Fill', web_app: { url: `${webAppUrl}?user_id=${chatId}` } }],
+                    ],
+                },
+            });
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+});
 
-// Экспортируйте только bot
+bot.on('polling_error', (error) => {
+    console.error('Polling error (should not happen with Webhooks):', error);
+});
+
 module.exports = bot;
