@@ -26,6 +26,9 @@ bot.on('message', async (msg) => {
             }
         })
     }
+    if(text === '/test') {
+        console.log('команда /test');
+    }
     console.log(`Received message from chat ${chatId}: ${msg.text}`); // логи этой хуеты
 });
 // обработочка ошибочек
