@@ -12,7 +12,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-
+app.use((err, req, res, next) => {
+    console.error('Global error handler:', err);
+    res.status(500).json({ error: 'Internal server error' });
+});
 app.use(cors())
 app.use(express.json())
 app.get('/api/test', (req, res) => {
