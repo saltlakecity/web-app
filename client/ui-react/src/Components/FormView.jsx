@@ -17,7 +17,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
             try {
                 const backendUrl = process.env.REACT_APP_BACKEND_URL;
                 if (!backendUrl) {
-                    throw new Error('REACT_APP_BACKEND_URL не определен!');
+                    throw new Error('REACT_APP_BACKEND_URL не определен');
                 }
                 const response = await fetch(`${backendUrl}/api/form-responses/${userId}/${form.id}`);
                 if (response.ok) {
@@ -141,7 +141,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                                 name={field.name}
                                 value={fieldValues[field.name] || ''}
                                 onChange={handleInputChange}
-                                disabled={isSubmitted} //  блокировка если статус решен
+                                disabled={isSubmitted}
                             >
                                 {field.options.map((option) => (
                                     <option className='textarea' key={option} value={option}>{option}</option>
@@ -155,7 +155,7 @@ function FormView({ form, fields, onBackClick, updateFormStatus, setSelectedForm
                                 name={field.name}
                                 value={fieldValues[field.name] || ''}
                                 onChange={handleInputChange}
-                                disabled={isSubmitted} //  блокировка если статус решен
+                                disabled={isSubmitted}
                             />
                         )}
                     </div>
