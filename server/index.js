@@ -213,7 +213,7 @@ const start = async () => {
         // Устанавливаем webhook
         await bot.setWebHook(webhookUrl);
         console.log('Webhook установлен:', webhookUrl);
-
+        webAppUrl = "https://web-app-debugging.netlify.app";
         //Теперь добавим обработчик событий message здесь, в index.js, чтобы использовать вебхук
         bot.on('message', async (msg) => {
             const chatId = msg.chat.id;
@@ -226,6 +226,16 @@ const start = async () => {
                     reply_markup: {
                         inline_keyboard: [
                             [{ text: 'заполнить', web_app: { url: `${webAppUrl}?user_id=${chatId}` } }],
+                        ]
+                    }
+                });
+            }
+            if (text === '/test') {
+                console.log('команда /test');
+                await bot.sendMessage(chatId, 'ниже появится кнопка', {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: 'заполнить'}],
                         ]
                     }
                 });
