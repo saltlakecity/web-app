@@ -219,7 +219,7 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
 
 const start = async () => {
     try {
-        const webhookUrl = `${process.env.WEB_APP_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+        const webhookUrl = `${process.env.RENDER_BACKEND_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
         await bot.setWebHook(webhookUrl);
         console.log('Webhook установлен:', webhookUrl);
 
