@@ -7,11 +7,13 @@ const tg = window.Telegram.WebApp;
 function App() {
   useEffect(() => {
           // Проверка инициализации Telegram WebApp
+    console.log('REACT_APP_BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
     if (window.Telegram && window.Telegram.WebApp) {
         tg.ready();
         const parsedQuery = queryString.parse(window.location.search);
         const userIdFromUrl = parsedQuery.user_id;
         setUserId(userIdFromUrl);
+        
         const loadData = async () => {
             try {
                 const formsResponse = await fetch('/forms.json'); // Проверьте путь!
