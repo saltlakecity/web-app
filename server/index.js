@@ -11,12 +11,7 @@ const { JSDOM } = require('jsdom');
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
-
-const corsOptions = {
-    origin: process.env.FRONTEND_URL, // Замените на URL вашего frontend на Netlify
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-};
-app.use(cors(corsOptions))
+app.use(cors())
 app.use(express.json())
 app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
