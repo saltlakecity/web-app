@@ -1,9 +1,8 @@
-
 const express = require('express');
 const dotenv = require('dotenv');
 const { Pool } = require('pg');
 const cors = require('cors');
-const bot = require('./telegram-test-bot'); // Импортируем объект bot
+const bot = require('./telegram-test-bot.js'); // Импортируем объект bot
 const fs = require('fs');
 const { sanitize } = require('dompurify');
 const createDOMPurify = require('dompurify');
