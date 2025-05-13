@@ -12,8 +12,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
-app.use(cors())
+const corsOptions = {
+    origin: process.env.FRONTEND_URL, // Замените на URL вашего frontend на Netlify
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+};
+app.use(cors(corsOptions))
 app.use(express.json())
 app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
