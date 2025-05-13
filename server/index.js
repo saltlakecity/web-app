@@ -25,6 +25,9 @@ app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
 });
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    },
 });
 
 

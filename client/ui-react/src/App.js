@@ -6,7 +6,7 @@ import queryString from 'query-string';
 const tg = window.Telegram.WebApp;
 function App() {
   useEffect(() => {
-          // инициализация webapp в тгшечке
+          // инициализация webapp в тг
     if (window.Telegram && window.Telegram.WebApp) {
         tg.ready();
         const parsedQuery = queryString.parse(window.location.search);
@@ -29,15 +29,15 @@ function App() {
                 if (userIdFromUrl) {
                     const backendUrl = process.env.REACT_APP_BACKEND_URL; // получение url и проверка на доступность
                     if (!backendUrl) {
-                        throw new Error('REACT_APP_BACKEND_URL не определен!');
+                        throw new Error('REACT_APP_BACKEND_URL не определен');
                     }
                     const statusesResponse = await fetch(`${backendUrl}/api/user-statuses/${userIdFromUrl}`);
                     if (!statusesResponse.ok) {
-                        throw new Error(`Ошибка загрузки статусов: ${statusesResponse.status}`);
+                        throw new Error(`ошибка загрузки статусов: ${statusesResponse.status}`);
                     }
                     const statusesData = await statusesResponse.json();
                     setUserStatuses(statusesData);
-                    console.log('Статусы пользователя загружены:', statusesData);
+                    console.log('статусы пользователя загружены:', statusesData);
                 }
             } catch (error) {
                 console.error('Ошибка загрузки данных:', error);
