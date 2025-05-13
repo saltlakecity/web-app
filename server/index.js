@@ -1,10 +1,11 @@
+
 const express = require('express');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const { Pool } = require('pg');
 const cors = require('cors');
-const bot = require('./telegram-test-bot')
+const bot = require('./telegram-test-bot'); // Импортируем объект bot
 const fs = require('fs');
-const { sanitize } = require('dompurify'); //  dompurify от xss
+const { sanitize } = require('dompurify');
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
 
@@ -12,34 +13,30 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use(cors());
+app.use(express.json());
 
-app.use(cors())
-app.use(express.json())
 app.get('/api/test', (req, res) => {
     return res.json({ message: 'backend zaebis class' });
 });
+
+// Обработчик POST-запросов от Telegram (Webhooks)
 app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
-    console.log('Получен POST-запрос от Telegram:', req.body); //  Добавляем логирование
-    bot.processUpdate(req.body);
+    console.log('Получен POST-запрос от Telegram:', req.body);
+    bot.processUpdate(req.body); // Обрабатываем входящий запрос через telegram bot
     res.sendStatus(200);
 });
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false //  позже настроить
+        rejectUnauthorized: false
     }
 });
 
-
-//  проверка соед. с БД
 pool.connect()
     .then(() => console.log('Connected to PostgreSQL'))
     .catch(err => console.error('Error connecting to PostgreSQL:', err));
-app.post(`/bot${process.env.TELEGRAM_BOT_TOKEN}`, (req, res) => {
-    console.log('Получен POST-запрос от Telegram:', req.body); //  логи
-    bot.processUpdate(req.body);
-    res.sendStatus(200);
-});
 
 
 //  API для получения статусов опросов пользователя
@@ -60,7 +57,6 @@ app.get('/api/user-statuses/:userId', async (req, res) => {
         res.status(500).json({ error: 'Ошибка сервера' });
     }
 });
-
 
 //  API для обновления статуса опроса пользователя
 app.post('/api/user-statuses/:userId', async (req, res) => {
@@ -138,15 +134,15 @@ app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     let responses = req.body;
 
     try {
-        // санитайзинг данных 
-          for (const key in responses) {
-              if (responses.hasOwnProperty(key)) {
-                  if (typeof responses[key] === 'string') {
-                      // экранирование html
-                      responses[key] = escapeHtml(responses[key]);
-                  }
-              }
-          }
+        // санитайзинг данных
+        for (const key in responses) {
+            if (responses.hasOwnProperty(key)) {
+                if (typeof responses[key] === 'string') {
+                    // экранирование html
+                    responses[key] = escapeHtml(responses[key]);
+                }
+            }
+        }
         //  обьект ответов в строку json Для хранения
         const responsesJson = JSON.stringify(responses);
 
@@ -177,7 +173,6 @@ app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     }
 });
 
-
 // API для получения ответов пользователя
 app.get('/api/form-responses/:userId/:formId', async (req, res) => {
     const userId = req.params.userId;
@@ -192,7 +187,7 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
         if (result.rows.length > 0) {
             //  извлекаем ответы из бд и преобразуем в json
             let responses = JSON.parse(result.rows[0].responses);
-              // десанитизация данных из бд
+            // десанитизация данных из бд
             for (const key in responses) {
                 if (responses.hasOwnProperty(key)) {
                     if (typeof responses[key] === 'string') {
@@ -212,17 +207,41 @@ app.get('/api/form-responses/:userId/:formId', async (req, res) => {
     }
 });
 
-
-
 const start = async () => {
     try {
         const webhookUrl = `${process.env.WEB_APP_URL}/bot${process.env.TELEGRAM_BOT_TOKEN}`;
+
+        // Устанавливаем webhook
         await bot.setWebHook(webhookUrl);
         console.log('Webhook установлен:', webhookUrl);
 
-        app.listen(PORT, () => console.log(`server started on port ${PORT}`))
+        //Теперь добавим обработчик событий message здесь, в index.js, чтобы использовать вебхук
+        bot.on('message', async (msg) => {
+            const chatId = msg.chat.id;
+            const text = msg.text;
+            console.log(`Received message from chat ${chatId}: ${msg.text}`);
+
+            if (text === '/start') {
+                console.log('команда /start');
+                await bot.sendMessage(chatId, 'ниже появится кнопка', {
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: 'заполнить', web_app: { url: `${webAppUrl}?user_id=${chatId}` } }],
+                        ]
+                    }
+                });
+            }
+            console.log(`Received message from chat ${chatId}: ${msg.text}`); // логи этой хуеты
+        });
+        // обработочка ошибочек
+        bot.on('polling_error', (error) => {
+            console.error('Telegram bot polling error:', error);
+        });
+
+        app.listen(PORT, () => console.log(`server started on port ${PORT}`));
     } catch (e) {
-        console.log(e)
+        console.log(e);
     }
-}
-start()
+};
+
+start();

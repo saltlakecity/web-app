@@ -2,34 +2,18 @@ const TelegramBot = require('node-telegram-bot-api');
 const dotenv = require('dotenv');
 dotenv.config();
 
-
 const token = process.env.TELEGRAM_BOT_TOKEN;
 if (!token) {
     console.error('TELEGRAM_BOT_TOKEN is not defined in .env');
-    process.exit(1); // если токен не задан хуйня выходим
-};
-
+    process.exit(1);
+}
 
 const bot = new TelegramBot(token);
 const webAppUrl = 'https://web-app-debugging.netlify.app';
-bot.on('message', async (msg) => {
-    const chatId = msg.chat.id;
-    const text = msg.text;
-    console.log(`Received message from chat ${chatId}: ${msg.text}`);
-    if(text === '/start') {
-        console.log('команда /start');
-        await bot.sendMessage(chatId,'ниже появится кнопка', {
-            reply_markup: {
-                inline_keyboard:[
-                    [{ text: 'заполнить', web_app: { url: `${webAppUrl}?user_id=${chatId}` } }],
-                ]
-            }
-        })
-    }
-    console.log(`Received message from chat ${chatId}: ${msg.text}`); // логи этой хуеты
-});
-// обработочка ошибочек
-bot.on('polling_error', (error) => {
-    console.error('Telegram bot polling error:', error);
-});
+
+// УБЕРИТЕ ОБРАБОТЧИК СОБЫТИЙ "message" И "polling_error" ОТСЮДА!
+// Они больше не нужны, когда вы используете webhook.
+// Все сообщения будут поступать через POST-запросы на ваш сервер Express.
+
+// Экспортируйте только bot
 module.exports = bot;
