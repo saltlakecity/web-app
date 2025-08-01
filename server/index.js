@@ -7,7 +7,7 @@ const fs = require("fs");
 const { sanitize } = require("dompurify"); //  dompurify от xss
 const createDOMPurify = require("dompurify");
 const { JSDOM } = require("jsdom");
-// im gay
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
