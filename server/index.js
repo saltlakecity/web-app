@@ -110,7 +110,6 @@ function escapeHtml(string) {
     });
 }
 
-// дээкранирование спецсимволов
 function unescapeHtml(string) {
     return string.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {
         switch (m) {
@@ -129,6 +128,9 @@ function unescapeHtml(string) {
         }
     });
 }
+
+
+
 //  API для сохранения ответов пользователя
 app.post('/api/form-responses/:userId/:formId', async (req, res) => {
     const userId = req.params.userId;

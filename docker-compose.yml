@@ -5,9 +5,9 @@ services:
       context: ./client/ui-react
       dockerfile: Dockerfile
     ports:
-      - "3000:80" # Или "80:80", если хотите, чтобы Nginx слушал на порту 80 на хост-машине
+      - "3000:80"
     depends_on:
-      - backend # Указываем, что frontend зависит от backend
+      - backend
     environment:
       - REACT_APP_BACKEND_URL=http://backend:5000
 
